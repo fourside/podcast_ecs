@@ -82,6 +82,8 @@ export class PodcastEcsStack extends Stack {
     });
 
     for (const schedule of schedules) {
+      // 常にNAT Gatewayが作成され、コストが $0.062 per NAT Gateway Hour かかっている
+      // https://docs.aws.amazon.com/ja_jp/AmazonECS/latest/bestpracticesguide/networking-outbound.html
       new ecs_patterns.ScheduledFargateTask(this, `ScheduledFargateTask_${schedule.name}`, {
         cluster,
         schedule: appscaling.Schedule.expression(cronExpression(jstToUtc(schedule.cronDate))),
